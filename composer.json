@@ -1,0 +1,21 @@
+{
+    "name": "wakeonweb/behat-contexts",
+    "description": "Provide some behat contexts",
+    "keywords": ["behat", "contexts", "orm", "amqp"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/WakeOnWeb/behat-contexts/graphs/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WakeOnWeb\\BehatContexts\\": "src"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "behat/behat": "~3.0"
+    }
+}
