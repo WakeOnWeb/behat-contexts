@@ -45,7 +45,7 @@ class AmqpContext implements Context
      */
     public function iHaveMessagesInAmqpQueue(int $countExpected, string $queueName): void
     {
-        $count = $this->getAMQPConnection($queueName)->declare();
+        $count = $this->getAMQPQueue($queueName)->declare();
 
         if ($count !== $countExpected) {
             throw new \Exception(sprintf('There is %d message(s) in the queue at this moment.', $count));
@@ -71,7 +71,16 @@ class AmqpContext implements Context
      */
     public function iClearMessagesInAmqpQueue(string $queueName): void
     {
-        $this->getAMQPQueue($queueName)->purge();
+        try {
+            $this->getAMQPQueue($queueName)->purge();
+        } catch (\AMQPQueueException $e) {
+            if ($e->getCode() === 404) {
+                var_export(sprintf('Queue %s does not exists\\n', $queueName));
+                return;
+            }
+
+            throw $e;
+        }
     }
 
     /**
