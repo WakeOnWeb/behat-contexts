@@ -92,14 +92,15 @@ class AmqpContext implements Context
     /**
      *
      * @param string       $queueName
+     * @param string       $command
      * @param PyStringNode $string
      *
-     * @Given I publish in amqp queue :queueName with message:
+     * @Given I publish in amqp queue :queueName message :command with content:
      */
-    public function iPublishInAmqpQueueWithMessage(string $queueName, PyStringNode $string): void
+    public function iPublishInAmqpQueueMessageWithContent(string $queueName, string $command, PyStringNode $string): void
     {
         try {
-            $this->getAMQPExchange($queueName)->publish($string);
+            $this->getAMQPConnection($queueName)->publish($string, ['content_type' => 'text/plain', 'type' => $command]);
         } catch (\AMQPQueueException $e) {
             if ($e->getCode() === 404) {
                 var_export(sprintf('Queue %s does not exists\\n', $queueName));
@@ -164,5 +165,27 @@ class AmqpContext implements Context
         }
 
         return $this->exchanges[$queueName];
+    }
+
+    /**
+     * @param string $queueName queueName
+     *
+     * @return AmqpConnection
+     *
+     * @throws \Exception
+     */
+    private function getAMQPConnection(string $queueName): AmqpConnection
+    {
+            if (false === array_key_exists($queueName, $this->transports)) {
+                throw new \Exception(sprintf('AMQP Connection with name %s does not exist.', $queueName));
+            }
+
+            $dsn = $this->transports[$queueName];
+
+            if (preg_match('/^env\((?P<env_var>.*)\)$/', $dsn, $matches)) {
+                $dsn = getenv($matches['env_var']);
+            }
+
+            return AmqpConnection::fromDsn($dsn);
     }
 }

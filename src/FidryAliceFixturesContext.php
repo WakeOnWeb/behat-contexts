@@ -52,10 +52,10 @@ class FidryAliceFixturesContext implements Context
     private function getFilepath(string $filename): string
     {
         if (null === $this->basepath) {
-            $this->basepath = $this->getContainer()->getParameter('kernel.project_dir').'/tests/fixtures';
+            $this->basepath = 'tests/fixtures';
         }
 
-        return $this->basepath.'/'.$filename;
+        return $this->getContainer()->getParameter('kernel.project_dir').'/'.$this->basepath.'/'.$filename;
     }
 
     /**
