@@ -29,11 +29,6 @@ class AmqpContext implements Context
     private $queues = [];
 
     /**
-     * @var \AMQPExchange[]
-     */
-    private $exchanges = [];
-
-    /**
      * @param string[] $transports transports
      */
     public function __construct(array $transports)
@@ -137,34 +132,6 @@ class AmqpContext implements Context
         }
 
         return $this->queues[$queueName];
-    }
-
-    /**
-     * @param string $queueName queueName
-     *
-     * @return \AmqpExchange
-     */
-    private function getAMQPExchange(string $queueName): \AmqpExchange
-    {
-        if (false === array_key_exists($queueName, $this->exchanges)) {
-            if (false === array_key_exists($queueName, $this->transports)) {
-                throw new \Exception(sprintf('AMQP Connection with name %s does not exist.', $queueName));
-            }
-
-            $dsn = $this->transports[$queueName];
-
-            if (preg_match('/^env\((?P<env_var>.*)\)$/', $dsn, $matches)) {
-                $dsn = getenv($matches['env_var']);
-            }
-
-            if (false === class_exists(AmqpConnection::class)) {
-                throw new \Exception('We support at this moment only symfony/messenger arm-pack to provide an AmqpConnection.');
-            }
-
-            $this->exchanges[$queueName] = AmqpConnection::fromDsn($dsn)->exchange();
-        }
-
-        return $this->exchanges[$queueName];
     }
 
     /**
