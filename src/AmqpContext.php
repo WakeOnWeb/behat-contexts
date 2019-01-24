@@ -3,6 +3,7 @@
 namespace WakeOnWeb\BehatContexts;
 
 use Behat\Behat\Context\Context;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use Symfony\Component\Messenger\Transport\AmqpExt\Connection as AmqpConnection;
 
@@ -84,6 +85,28 @@ class AmqpContext implements Context
     }
 
     /**
+     *
+     * @param string       $queueName
+     * @param string       $command
+     * @param PyStringNode $string
+     *
+     * @Given I publish in amqp queue :queueName message :command with content:
+     */
+    public function iPublishInAmqpQueueMessageWithContent(string $queueName, string $command, PyStringNode $string): void
+    {
+        try {
+            $this->getAMQPConnection($queueName)->publish($string, ['content_type' => 'text/plain', 'type' => $command]);
+        } catch (\AMQPQueueException $e) {
+            if ($e->getCode() === 404) {
+                var_export(sprintf('Queue %s does not exists\\n', $queueName));
+                return;
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
      * @param string $queueName queueName
      *
      * @return \AmqpQueue
@@ -109,5 +132,27 @@ class AmqpContext implements Context
         }
 
         return $this->queues[$queueName];
+    }
+
+    /**
+     * @param string $queueName queueName
+     *
+     * @return AmqpConnection
+     *
+     * @throws \Exception
+     */
+    private function getAMQPConnection(string $queueName): AmqpConnection
+    {
+            if (false === array_key_exists($queueName, $this->transports)) {
+                throw new \Exception(sprintf('AMQP Connection with name %s does not exist.', $queueName));
+            }
+
+            $dsn = $this->transports[$queueName];
+
+            if (preg_match('/^env\((?P<env_var>.*)\)$/', $dsn, $matches)) {
+                $dsn = getenv($matches['env_var']);
+            }
+
+            return AmqpConnection::fromDsn($dsn);
     }
 }
