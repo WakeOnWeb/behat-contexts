@@ -54,6 +54,16 @@ class AmqpContext implements Context
 
     /**
      * @BeforeScenario @amqp
+     */
+    public function iSetupAllAmqpQueues(): void
+    {
+        foreach ($this->transports as $queue => $dsn) {
+            $this->getAMQPConnection($queue)->setup();
+        }
+    }
+
+    /**
+     * @BeforeScenario @amqp
      *
      * @Given I clear messages in all amqp queues
      */
