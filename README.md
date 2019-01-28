@@ -13,6 +13,10 @@ default:
                         # support this case since Behat and Symfony kernel are not the sames.
                         async_internal: "env(MESSENGER_TRANSPORT_ASYNC_INTERNAL_DSN)"
                         my_second_queue: "DIRECT_DSN"
+                    # you can define your own Adapter, it musts implements \WakeOnWeb\BehatContexts\AmqpAdapter\AdapterInterface;
+                    # adapterClass: \WakeOnWeb\BehatContexts\AmqpAdapter\SymfonyMessengerAdapter
+                    # Create queues if they don't exist.
+                    # setupQueuesAutomatically: 1
                 - WakeOnWeb\BehatContexts\FidryAliceFixturesContext:
                     # optional
                     # default is %kernel.project_dir%/tests/fixtures
