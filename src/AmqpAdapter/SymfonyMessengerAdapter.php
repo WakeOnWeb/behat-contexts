@@ -42,6 +42,20 @@ class SymfonyMessengerAdapter implements AdapterInterface
         return $this->getAmqpConnection($transport)->queue()->declare();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function acknowledgeAndGetNextMessageInTransport(string $transport): ?string
+    {
+        $envelope = $this->getAmqpConnection($transport)->queue()->get(AMQP_AUTOACK);
+
+        if (null === $envelope) {
+            return null;
+        }
+
+        return $envelope->getBody();
+    }
+
 
     /**
      * {@inheritdoc}
@@ -74,6 +88,13 @@ class SymfonyMessengerAdapter implements AdapterInterface
         }
     }
 
+    /**
+     * @param string $transport
+     *
+     * @return AmqpConnection
+     *
+     * @throws \Exception
+     */
     private function getAmqpConnection(string $transport): AmqpConnection
     {
         if (false === array_key_exists($transport, $this->transports)) {

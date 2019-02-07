@@ -26,6 +26,13 @@ interface AdapterInterface
     public function countMessagesInTransport(string $transport): int;
 
     /**
+     * @param string $transport
+     *
+     * @return string
+     */
+    public function acknowledgeAndGetNextMessageInTransport(string $transport): ?string;
+
+    /**
      * @return void
      */
     public function purgeAllTransports(): void;

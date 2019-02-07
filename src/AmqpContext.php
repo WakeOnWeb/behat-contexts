@@ -79,7 +79,7 @@ class AmqpContext implements Context
     }
 
     /**
-     * @param string       $stransport
+     * @param string       $transport
      * @param string       $command
      * @param PyStringNode $string
      *
@@ -88,5 +88,29 @@ class AmqpContext implements Context
     public function iPublishInAmqpQueueMessageWithContent(string $transport, string $command, PyStringNode $string): void
     {
         $this->adapter->publish($transport, $string, $command);
+    }
+
+    /**
+     * @param string       $transport
+     * @param PyStringNode $dataExpected
+     *
+     * @throws \Exception
+     *
+     * @Then I acknowledge the content of next message in amqp queue :transport and its content is:
+     */
+    public function iAcknowledgeTheContentOfTheNextMessageInAmqpTransportAndItsContentIs(string $transport, PyStringNode $dataExpected): void
+    {
+        $dataRetrieved = $this->adapter->acknowledgeAndGetNextMessageInTransport($transport);
+        $dataRetrievedDecoded = json_decode($dataRetrieved);
+
+        if (false === $dataRetrievedDecoded || null === $dataRetrievedDecoded) {
+            if ($dataRetrieved != $dataExpected->getRaw()) { // string comparison
+                throw new \Exception(sprintf('Retrieved message %s from the queue %s is not equal to expected message %s', $dataRetrieved, $transport, $dataExpected));
+            }
+        } else {
+            if ($dataRetrievedDecoded != json_decode($dataExpected->getRaw())) { // stdclass comparison
+                throw new \Exception(sprintf('Retrieved message %s from the queue %s is not equal to expected message %s', $dataRetrieved, $transport, $dataExpected));
+            }
+        }
     }
 }
