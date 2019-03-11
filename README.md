@@ -29,6 +29,11 @@ default:
                         - {serverName: 'user', port: 8870, host: 'localhost', basePath: '/admin'}
                         - {serverName: 'mailer'}
                     # bodyRequestPath: tests/functional/fixtures/request (default)
+                - WakeOnWeb\BehatContexts\ApiContext:
+                    # basepath is %kernel.project_dir%/
+                    # optional
+                    # $bodyRequestPath: tests/functional/fixtures/request (default)
+                    # $bodyResponsePath: tests/functional/fixtures/response (default)
             paths:
                 - tests/Features
 ```
@@ -82,3 +87,16 @@ Steps available:
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response with content :body
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response with file :bodyFileName as content
+
+## ApiContext
+
+Needs:
+    [BehatSymfony2Extension](https://github.com/Behat/Symfony2Extension),
+    [UbirakRestApiBehatExtension](https://github.com/ubirak/rest-api-behat-extension),
+
+Steps available:
+
+    When I send a :method request to :url with content from file :bodyFileName as body
+    Then The response header :header should be equal to string :value
+    Then The response header :header should be match with pattern :regex
+    Then The response body should be equal to content from :responseFileName
