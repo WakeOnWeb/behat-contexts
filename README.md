@@ -29,6 +29,9 @@ default:
                         - {serverName: 'user', port: 8870, host: 'localhost', basePath: '/admin'}
                         - {serverName: 'mailer'}
                     # bodyRequestPath: tests/functional/fixtures/request (default)
+                - WakeOnWeb\BehatContexts\SwaggerContext:
+                    # basepath is %kernel.project_dir%/
+                    # swaggerFile: doc/mySwaggerFile.yaml
             paths:
                 - tests/Features
 ```
@@ -82,3 +85,19 @@ Steps available:
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response with content :body
     Given A :method request on path matching :regex to the mock server :serverName must be return a :responseCode response with file :bodyFileName as content
+
+## SwaggerContext
+
+Needs:
+    [BehatSymfony2Extension](https://github.com/Behat/Symfony2Extension),
+    [UbirakRestApiBehatExtension](https://github.com/ubirak/rest-api-behat-extension),
+    [SwaggerValidator](https://github.com/WakeOnWeb/swagger),
+
+How to use:
+
+- Set the path of your yaml swagger file (V2 only) in the behat.yml file. 
+- Use the step after call the endpoint with UbirakRestApi
+
+Steps available:
+
+    Then I validate Swagger response on :path with :method method and statusCode :statusCode
