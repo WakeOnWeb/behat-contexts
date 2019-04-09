@@ -21,6 +21,8 @@
     "require-dev": {
         "behat/symfony2-extension": "^2.1",
         "internations/http-mock": "^0.12",
-        "squizlabs/php_codesniffer": "~3.1.1"
+        "squizlabs/php_codesniffer": "~3.1.1",
+        "ubirak/rest-api-behat-extension": "^7.0",
+        "wakeonweb/swagger": "^1.0"
     }
 }
