@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\functional\Context;
+namespace WakeOnWeb\BehatContexts;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;

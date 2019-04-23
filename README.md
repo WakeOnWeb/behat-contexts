@@ -32,6 +32,9 @@ default:
                 - WakeOnWeb\BehatContexts\SwaggerContext:
                     # basepath is %kernel.project_dir%/
                     # swaggerFile: doc/mySwaggerFile.yaml
+                - WakeOnWeb\BehatContexts\FileContext:
+                    # optional
+                    # basePath: 'test/funtional/fixtures/file'
             paths:
                 - tests/Features
 ```
@@ -101,3 +104,29 @@ How to use:
 Steps available:
 
     Then I validate Swagger response on :path with :method method and statusCode :statusCode
+    
+## FileContext
+
+Needs:
+    [BehatSymfony2Extension](https://github.com/Behat/Symfony2Extension),
+
+How to use:
+
+- Set the base path of your fixture file folder (optional, default: tests/functional/fixtures/file)
+- Use steps
+- Use the @clean-files-after or @clean-files-before tag for clean file created with step "I create file in :path from :file"
+- If the scenario generate files, you can clean it with step "I clean all files from folder :folder"
+
+Steps available:
+
+    Given I create file in :path from :file
+    Then The file :file must be a copy of :fileExpected
+    Then One of file present in :path must be a copy of :fileExpected
+    Then The file :file size is less or equal to :size octet
+    Then The file :file size is equal to :size octet
+    Then The file :file mime type must be equal to :mimeType
+    Then The file :file mime type must be equal to one of following:
+    Then :number files must be present in folder :path
+    Then The file with name :fileName must be present in :path
+    Then I clean all files from folder :folder
+    Then I clean generated files
